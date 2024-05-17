@@ -1,0 +1,157 @@
+.skin-analysis-container {
+  display: flex;
+  gap: 2rem;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.analysis-image {
+  height: 325px;
+  width: 325px;
+  background-color: #0000002e;
+  border-radius: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+}
+#cameraFeed {
+  width: 138%;
+  height: 100%;
+  display: none;
+}
+
+#captureButton {
+  position: absolute;
+  bottom: 0;
+  font-size: 1em;
+  font-weight: 500;
+  color: white;
+  background-color: black;
+  display: none;
+  cursor: pointer;
+  border-radius: 32px;
+  padding: 7px 13px;
+  border: none;
+}
+#captureImage {
+  font-size: 1em;
+  font-weight: 500;
+  color: white;
+  background-color: black;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 32px;
+  padding: 7px 13px;
+  border: none;
+}
+#closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 0.7em;
+  font-weight: 500;
+  color: white;
+  background-color: black;
+  display: none;
+  cursor: pointer;
+  border-radius: 32px;
+  padding: 4px 7px;
+  z-index: 99999;
+  border: none;
+}
+.analysis-text {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  width: 50%;
+}
+.text1 {
+  line-height: 1.5em;
+  font-size: 32px;
+  font-weight: 500;
+}
+.text2 {
+  line-height: 1em;
+  font-size: 16px;
+  font-weight: 500;
+  display: none;
+}
+
+.text2 h3 {
+  font-weight: 600;
+}
+#issues-list p {
+  margin-bottom: 0;
+}
+#issues-list ul {
+  margin-top: 0;
+}
+#issues-list ul li {
+  line-height: 1.5em;
+}
+
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+.inputfile + label {
+  font-size: 1em;
+  font-weight: 500;
+  color: white;
+  background-color: black;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 32px;
+  padding: 7px 13px;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+  opacity: 0.9;
+}
+#upload_form {
+  display: flex;
+  flex-direction: column;
+}
+#progressBar {
+  display: none;
+  border-radius: 7px;
+  height: 7px;
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+}
+#progressBar::-webkit-progress-bar {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 7px;
+}
+#progressBar::-webkit-progress-value {
+  background-color: #000;
+  border-radius: 7px;
+  box-shadow: 1px 1px 5px 3px rgba(255, 255, 255, 0.8);
+}
+#progressBar::-moz-progress-bar {
+  /* style rules */
+}
+#uploadPercentage {
+  text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+  .skin-analysis-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 90%;
+    margin: 0 auto;
+  }
+  .analysis-text {
+    width: 100%;
+  }
+}

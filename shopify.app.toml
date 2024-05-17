@@ -1,0 +1,29 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "7a8bfa24e6a7cfd4f566f4f200db1238"
+name = "product-recomendation"
+handle = "product-recomendation-1"
+application_url = "https://intel-handmade-philip-storage.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "edraaktest.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = [
+  "https://intel-handmade-philip-storage.trycloudflare.com/auth/callback",
+  "https://intel-handmade-philip-storage.trycloudflare.com/auth/shopify/callback",
+  "https://intel-handmade-philip-storage.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-04"
+
+[pos]
+embedded = false
