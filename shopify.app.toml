@@ -3,7 +3,7 @@
 client_id = "7a8bfa24e6a7cfd4f566f4f200db1238"
 name = "product-recomendation"
 handle = "product-recomendation-1"
-application_url = "https://intel-handmade-philip-storage.trycloudflare.com"
+application_url = "https://consecutive-firm-upper-fitness.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://intel-handmade-philip-storage.trycloudflare.com/auth/callback",
-  "https://intel-handmade-philip-storage.trycloudflare.com/auth/shopify/callback",
-  "https://intel-handmade-philip-storage.trycloudflare.com/api/auth/callback"
+  "https://consecutive-firm-upper-fitness.trycloudflare.com/auth/callback",
+  "https://consecutive-firm-upper-fitness.trycloudflare.com/auth/shopify/callback",
+  "https://consecutive-firm-upper-fitness.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

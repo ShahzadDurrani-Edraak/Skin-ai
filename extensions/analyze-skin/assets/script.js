@@ -74,20 +74,25 @@ async function sendImageToAPI(imageFile) {
         const analysisTextDiv = document.getElementById("issues-list");
         let featureListHTML = "<ul>";
 
+        // Mapping data to the feature list in order to fetch recommended products
+        const featureList = [];
+        let skinTypeIndex;
         for (const [feature, details] of Object.entries(result)) {
           if (feature === "skin_type") {
-            const skinTypeValue = details.skin_type;
+            skinTypeIndex = details.value;
+            const skinType = details.skin_type;
             const skinTypeDetails = [
               "Oily skin",
               "Dry skin",
               "Neutral skin",
               "Combination skin",
             ];
-            const skinTypeDetail = skinTypeDetails[skinTypeValue];
+            const skinTypeDetail = skinTypeDetails[skinType];
             featureListHTML += `<li>Skin Type: ${skinTypeDetail}</li>`;
           } else {
             if (details.value === 1 && details.confidence > 0.8) {
               featureListHTML += `<li>${feature}</li>`;
+              featureList.push(feature);
             }
           }
         }
@@ -96,6 +101,148 @@ async function sendImageToAPI(imageFile) {
         analysisTextDiv.innerHTML = featureListHTML;
         analysisTextDiv1.style.display = "none";
         analysisTextDiv2.style.display = "block";
+
+        // Fetching recommended products
+        const address = "https://f6a2-39-58-102-186.ngrok-free.app";
+        try {
+          const productResponse = await fetch(
+            address + "/api/products/recommendations",
+            {
+              method: "POST",
+              body: JSON.stringify({
+                concerns: featureList,
+                skinType: skinTypeIndex,
+              }),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            },
+          );
+          let products = [];
+          if (!productResponse.ok) {
+            console.error(
+              "Failed to fetch recommended products. Assigning dummy data",
+            );
+            products = [
+              {
+                id: "3",
+                name: "Product 3",
+                description: null,
+                image: null,
+                ingredients: [
+                  {
+                    id: "Benzoyl Peroxide",
+                    name: "Benzoyl Peroxide",
+                    description: null,
+                    image: null,
+                  },
+                  {
+                    id: "Niacinamide",
+                    name: "Niacinamide",
+                    description: null,
+                    image: null,
+                  },
+                  {
+                    id: "Retinol",
+                    name: "Retinol",
+                    description: null,
+                    image: null,
+                  },
+                ],
+                score: 3,
+              },
+              {
+                id: "4",
+                name: "Product 4",
+                description: null,
+                image: null,
+                ingredients: [
+                  {
+                    id: "Caffeine",
+                    name: "Caffeine",
+                    description: null,
+                    image: null,
+                  },
+                  {
+                    id: "Hyaluronic Acid",
+                    name: "Hyaluronic Acid",
+                    description: null,
+                    image: null,
+                  },
+                  {
+                    id: "Peptides",
+                    name: "Peptides",
+                    description: null,
+                    image: null,
+                  },
+                  {
+                    id: "Retinoids",
+                    name: "Retinoids",
+                    description: null,
+                    image: null,
+                  },
+                  {
+                    id: "Vitamin C",
+                    name: "Vitamin C",
+                    description: null,
+                    image: null,
+                  },
+                ],
+                score: 6,
+              },
+              {
+                id: "5",
+                name: "Product 5",
+                description: null,
+                image: null,
+                ingredients: [
+                  {
+                    id: "Caffeine",
+                    name: "Caffeine",
+                    description: null,
+                    image: null,
+                  },
+                  {
+                    id: "Peptides",
+                    name: "Peptides",
+                    description: null,
+                    image: null,
+                  },
+                  {
+                    id: "Retinoids",
+                    name: "Retinoids",
+                    description: null,
+                    image: null,
+                  },
+                  {
+                    id: "Vitamin C",
+                    name: "Vitamin C",
+                    description: null,
+                    image: null,
+                  },
+                ],
+                score: 5,
+              },
+            ];
+          } else {
+            products = await productResponse.json();
+          }
+
+          document
+            .getElementById("recommendations-container")
+            .classList.remove("recommendations--hidden");
+          const recommendationListDiv =
+            document.getElementById("recommedation-list");
+
+          let recommendedProductsList = "<ul>";
+          products.forEach((product) => {
+            recommendedProductsList += `<li><a href="${product.url}" target="_blank">${product.name}</a></li>`;
+          });
+          recommendedProductsList += "</ul>";
+          recommendationListDiv.innerHTML = recommendedProductsList;
+        } catch (error) {
+          console.error("Error fetching recommended products:", error);
+        }
       } else {
         console.error("Failed to upload image");
 
