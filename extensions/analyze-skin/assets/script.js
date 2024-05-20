@@ -103,7 +103,7 @@ async function sendImageToAPI(imageFile) {
         analysisTextDiv2.style.display = "block";
 
         // Fetching recommended products
-        const address = "https://f6a2-39-58-102-186.ngrok-free.app";
+        const address = "https://e919-39-45-164-1.ngrok-free.app";
         try {
           const productResponse = await fetch(
             address + "/api/products/recommendations",
