@@ -2,16 +2,17 @@
 <script type="text/javascript" src="{{ 'script.js'| asset_url }}" async></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js" async></script>
 
-<div>
-  <div class='skin-analysis__container'>
-    <div class="analysis-image" id="analysis-image">
-      <video id="cameraFeed" class="camera-feed"></video>
-      <button id="captureImage">Capture</button>
-      <button id="captureButton">Capture</button>
-      <button id="closeButton">X</button>
-      <progress id="progressBar" value="0" max="100" style="width:250px;"></progress>
-      <p id="uploadPercentage"></p>
+<div class='skin-analysis-container'>
+  <div class="analysis-image" id="analysis-image">
+    <div class="video">
+    <video id="cameraFeed" class="camera-feed"></video>
+    <button id="captureImage">Capture</button>
+    <button id="captureButton">Capture</button>
+    <button id="closeButton">X</button>
+    <progress id="progressBar" value="0" max="100" style="width:250px;"></progress>
+    <p id="uploadPercentage"></p>
     </div>
+  </div>
     {% comment %} <div class="analysis-image" id="analysis-image">
 
       <img id="uploadedImage" src="#" width="auto" height="auto" alt="Uploaded Image" style="display: none;">
@@ -40,9 +41,9 @@
             <li>Dehydration</li>
           </ul>
         </div>
+        <button class="retake" id="retake">Retake Image</button>
       </div>
     </div>
-  </div>
   <div class="recommendations recommendations--hidden" id="recommendations-container">
     <h2>Recommended Products</h2>
     <div class="" id="recommedation-list"></div>

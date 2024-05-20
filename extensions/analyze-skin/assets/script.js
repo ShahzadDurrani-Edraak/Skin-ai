@@ -265,6 +265,7 @@ const cameraFeed = document.getElementById("cameraFeed");
 const captureButton = document.getElementById("captureButton");
 const startCapture = document.getElementById("captureImage");
 const closeButton = document.getElementById("closeButton");
+const retake = document.getElementById("retake");
 
 let stream;
 
@@ -324,5 +325,13 @@ startCapture.addEventListener("click", function () {
   startCapture.style.display = "none";
   captureButton.style.display = "inline-block";
   closeButton.style.display = "inline-block";
+  startCamera();
+});
+
+retake.addEventListener("click", function () {
+  startCapture.style.display = "none";
+  captureButton.style.display = "inline-block";
+  closeButton.style.display = "inline-block";
+  analysisImage.style.backgroundImage = ``;
   startCamera();
 });
