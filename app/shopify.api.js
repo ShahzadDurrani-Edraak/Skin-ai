@@ -15,6 +15,30 @@ app.get("/", async (http_request, http_response) => {
   );
 });
 
+app.get("/api/usersSkinProfile", async (http_request, http_response) => {
+  const usersSkinProfiles = await prisma.userSkinProfiles.findMany();
+  http_response.json(usersSkinProfiles);
+});
+
+app.post("/api/usersSkinProfile", async (http_request, http_response) => {
+  const { skinType, image, concerns, products, userId } = http_request.body;
+
+  const user = await prisma.userSkinProfiles.create({
+    data: {
+      skinType,
+      image,
+      userId: userId || 1,
+      skinConcerns: {
+        connect: concerns.map((concern) => ({ id: concern })),
+      },
+      recommendedProducts: {
+        connect: products.map((product) => ({ id: product })),
+      },
+    },
+  });
+  http_response.json(user);
+});
+
 app.post(
   "/api/products/recommendations",
   async (http_request, http_response) => {
@@ -77,5 +101,5 @@ app.post(
 const httpServer = createServer(app);
 
 httpServer.listen(5000, () =>
-  console.log("Your Slack-OAuth app is listening on port 5000."),
+  console.log("Node App is listening on port 5000."),
 );
