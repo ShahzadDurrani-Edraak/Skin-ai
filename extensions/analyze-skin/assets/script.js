@@ -1,47 +1,7 @@
-// function _(el) {
-//   return document.getElementById(el);
-// }
-// function uploadFile() {
-//   _("fileLabel").style.display = "none";
-//   _("file").style.display = "none";
-//   _("progressBar").style.display = "block";
-//   var file = _("file").files[0];
-//   var formdata = new FormData();
-//   formdata.append("file", file);
-//   var ajax = new XMLHttpRequest();
-//   ajax.upload.addEventListener("progress", progressHandler, false);
-//   ajax.addEventListener("load", completeHandler(file), false);
-//   ajax.addEventListener("error", errorHandler, false);
-//   ajax.addEventListener("abort", abortHandler, false);
-//   ajax.send(formdata);
-// }
-
-// function progressHandler(event) {
-//   _("progressBar").value = Math.round((event.loaded / event.total) * 100);
-//   _("uploadPercentage").innerHTML =
-//     "Uploading (" + Math.round((event.loaded / event.total) * 100) + "%)";
-// }
-
-// function completeHandler(event, file) {
-//   // _("progressBar").value = 0;
-//   _("progressBar").style.display = "none";
-//   _("uploadPercentage").innerHTML = "Uploaded Successful";
-//   // _("uploadedImage").style.display = "inline-block";
-//   // _("uploadedImage").src = "URL of the uploaded image";
-//   sendImageToAPI(file);
-// }
-
-// function errorHandler(event) {
-//   _("status").innerHTML = "Upload Failed";
-// }
-
-// function abortHandler(event) {
-//   _("status").innerHTML = "Upload Aborted";
-// }
-
 async function sendImageToAPI(imageFile) {
   const analysisTextDiv1 = document.getElementById("text1");
   const analysisTextDiv2 = document.getElementById("text2");
+  const errorDiv = document.getElementById("error");
   if (imageFile) {
     const formData = new FormData();
     formData.append("image_file", imageFile);
@@ -49,8 +9,19 @@ async function sendImageToAPI(imageFile) {
     formData.append("api_secret", "_51Ksj6-8td2WmjOoYsWHfgCdgSyRG-v");
 
     const progressBar = document.getElementById("progressBar");
+    const progressDiv = document.getElementById("progressing");
     const uploadPercentage = document.getElementById("uploadPercentage");
-    progressBar.style.display = "block";
+    progressDiv.style.display = "flex";
+
+    let progress = 0;
+
+    function updateProgressBar() {
+      progress += 10;
+      progressBar.value = Math.min(progress, 90);
+      uploadPercentage.innerText = `Uploading (${Math.min(progress, 90)}%)`;
+    }
+
+    const interval = setInterval(updateProgressBar, 500);
 
     try {
       const response = await fetch(
@@ -58,15 +29,16 @@ async function sendImageToAPI(imageFile) {
         {
           method: "POST",
           body: formData,
-          onUploadProgress: function (progressEvent) {
-            const percentCompleted = Math.round(
-              (progressEvent.loaded / progressEvent.total) * 100,
-            );
-            progressBar.value = percentCompleted;
-            uploadPercentage.innerText = `Uploading (${percentCompleted}%)`;
-          },
         },
       );
+
+      clearInterval(interval);
+
+      progressBar.value = 100;
+      uploadPercentage.innerText = `Upload complete`;
+
+      console.log("response :>> ", response);
+
       if (response.ok) {
         const data = await response.json();
         const result = data.result;
@@ -243,16 +215,18 @@ async function sendImageToAPI(imageFile) {
         } catch (error) {
           console.error("Error fetching recommended products:", error);
         }
+      } else if (response.status === 400) {
+        analysisTextDiv1.style.display = "none";
+        analysisTextDiv2.style.display = "none";
+        errorDiv.style.display = "block";
       } else {
         console.error("Failed to upload image");
-
-        analysisTextDiv1.style.display = "none";
-        analysisTextDiv2.style.display = "block";
       }
     } catch (error) {
       console.error("Error uploading image:", error);
     } finally {
-      progressBar.style.display = "none";
+      progressDiv.style.display = "none";
+      progressBar.value = 0;
       uploadPercentage.innerText = "";
     }
   } else {
@@ -266,6 +240,7 @@ const captureButton = document.getElementById("captureButton");
 const startCapture = document.getElementById("captureImage");
 const closeButton = document.getElementById("closeButton");
 const retake = document.getElementById("retake");
+const retakeButtons = document.querySelectorAll(".retake");
 
 let stream;
 
@@ -305,7 +280,7 @@ function captureImage() {
     const imageData = URL.createObjectURL(blob);
     analysisImage.style.backgroundImage = `url(${imageData})`;
 
-    console.log("BLOB ::::", blob);
+    // console.log("BLOB ::::", blob);
 
     // Send the image data to
     sendImageToAPI(blob);
@@ -328,10 +303,26 @@ startCapture.addEventListener("click", function () {
   startCamera();
 });
 
-retake.addEventListener("click", function () {
-  startCapture.style.display = "none";
-  captureButton.style.display = "inline-block";
-  closeButton.style.display = "inline-block";
-  analysisImage.style.backgroundImage = ``;
-  startCamera();
+// retake.addEventListener("click", function () {
+//   startCapture.style.display = "none";
+//   captureButton.style.display = "inline-block";
+//   closeButton.style.display = "inline-block";
+//   analysisImage.style.backgroundImage = ``;
+//   document
+//     .getElementById("recommendations-container")
+//     .classList.add("recommendations--hidden");
+//   startCamera();
+// });
+
+retakeButtons.forEach(function (retakeButton) {
+  retakeButton.addEventListener("click", function () {
+    startCapture.style.display = "none";
+    captureButton.style.display = "inline-block";
+    closeButton.style.display = "inline-block";
+    analysisImage.style.backgroundImage = ``;
+    document
+      .getElementById("recommendations-container")
+      .classList.add("recommendations--hidden");
+    startCamera();
+  });
 });
