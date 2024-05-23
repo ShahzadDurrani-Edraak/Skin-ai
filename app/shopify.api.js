@@ -4,9 +4,26 @@ import express from "express";
 const app = express();
 import { createServer } from "http";
 import cors from "cors";
+import dotenv from "dotenv";
+import Shopify from "shopify-api-node";
+import multer from "multer";
+dotenv.config();
 
+const shopify = new Shopify({
+  shopName: process.env.SHOPIFY_APP_URL.split("://")[1].replace("/", ""),
+  // apiKey: process.env.SHOPIFY_API_KEY,
+  // password: process.env.SHOPIFY_API_PASS,
+  accessToken: process.env.SHOPIFY_APP_ACCESS_TOKEN,
+  apiVersion: "2024-04",
+});
+
+// Allow parsing of request body
 app.use(express.json());
+// Allow parsing of FormData
+app.use(express.urlencoded({ extended: true }));
+// Allow parsing of multipart/form-data
 
+// To allow cross-origin requests
 app.use(cors({ origin: true, credentials: true }));
 
 app.get("/", async (http_request, http_response) => {
@@ -15,28 +32,86 @@ app.get("/", async (http_request, http_response) => {
   );
 });
 
+app.get("/products", async (http_request, http_response) => {
+  let products;
+  try {
+    // shopify api request to get products
+    products = await shopify.product.list({ limit: 5 });
+  } catch (error) {
+    console.error(error);
+  }
+  http_response.json(products);
+});
+
 app.get("/api/usersSkinProfile", async (http_request, http_response) => {
   const usersSkinProfiles = await prisma.userSkinProfiles.findMany();
   http_response.json(usersSkinProfiles);
 });
 
-app.post("/api/usersSkinProfile", async (http_request, http_response) => {
-  const { skinType, image, concerns, products, userId } = http_request.body;
+app.get("/api/files", async (http_request, http_response) => {
+  const files = await shopify.graphql(`{
+    files (first: 10, where: {mimeType: "image/png"}) {
+      nodes {
+        id
+        ... on MediaImage {
+          image {
+            url
+            width
+            height
+          }
+          mimeType
+        }
+        alt
+      }
+    }
+  }`);
 
-  const user = await prisma.userSkinProfiles.create({
-    data: {
-      skinType,
-      image,
-      userId: userId || 1,
-      skinConcerns: {
-        connect: concerns.map((concern) => ({ id: concern })),
-      },
-      recommendedProducts: {
-        connect: products.map((product) => ({ id: product })),
-      },
+  http_response.json(files);
+});
+
+app.get("/api/getUploadURL", async (http_request, http_response) => {
+  const {
+    stagedUploadsCreate: { stagedTargets },
+  } = await shopify.graphql(
+    `mutation stagedUploadsCreate($input: [StagedUploadInput!]!) {
+      stagedUploadsCreate(input: $input) {
+        stagedTargets {
+          url
+          resourceUrl
+          parameters {
+            name
+            value
+          }
+        }
+      }
+    }`,
+    {
+      input: [
+        {
+          filename: "image.png",
+          httpMethod: "POST",
+          mimeType: "image/png",
+          resource: "IMAGE",
+        },
+      ],
     },
-  });
-  http_response.json(user);
+  );
+  http_response.json(stagedTargets[0]);
+});
+
+app.post("/api/usersSkinProfile", async (http_request, http_response) => {
+  // Extract data from form-data request
+  const { skinType, concerns, image } = http_request.body;
+  console.log(http_request.body);
+
+  http_response.json({ skinType, concerns, image });
+  return;
+  // Convert blob to image
+  let imageURL;
+
+  console.log(imageURL);
+
+  http_response.json(imageURL);
 });
 
 app.post(

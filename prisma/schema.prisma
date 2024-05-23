@@ -53,9 +53,9 @@ model Concerns {
 
 model UserSkinProfiles {
   id Int @id @default(autoincrement())
-  userId Int
+  userId String
+  userName String
   skinType Int
-  image String?
+  image Bytes
   skinConcerns Concerns[]
-  recommendedProducts Products[]
 }
