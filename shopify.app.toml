@@ -3,7 +3,7 @@
 client_id = "7a8bfa24e6a7cfd4f566f4f200db1238"
 name = "product-recomendation"
 handle = "product-recomendation-1"
-application_url = "https://interesting-sunday-clip-villa.trycloudflare.com"
+application_url = "https://made-spending-experimental-eq.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://interesting-sunday-clip-villa.trycloudflare.com/auth/callback",
-  "https://interesting-sunday-clip-villa.trycloudflare.com/auth/shopify/callback",
-  "https://interesting-sunday-clip-villa.trycloudflare.com/api/auth/callback"
+  "https://made-spending-experimental-eq.trycloudflare.com/auth/callback",
+  "https://made-spending-experimental-eq.trycloudflare.com/auth/shopify/callback",
+  "https://made-spending-experimental-eq.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
