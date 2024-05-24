@@ -48,28 +48,8 @@ app.get("/api/usersSkinProfile", async (http_request, http_response) => {
   http_response.json(usersSkinProfiles);
 });
 
-app.get("/api/files", async (http_request, http_response) => {
-  const files = await shopify.graphql(`{
-    files (first: 10, where: {mimeType: "image/png"}) {
-      nodes {
-        id
-        ... on MediaImage {
-          image {
-            url
-            width
-            height
-          }
-          mimeType
-        }
-        alt
-      }
-    }
-  }`);
-
-  http_response.json(files);
-});
-
-app.get("/api/getUploadURL", async (http_request, http_response) => {
+app.post("/api/getUploadURL", async (http_request, http_response) => {
+  const { filename, mimeType, size } = http_request.body;
   const {
     stagedUploadsCreate: { stagedTargets },
   } = await shopify.graphql(
@@ -88,39 +68,106 @@ app.get("/api/getUploadURL", async (http_request, http_response) => {
     {
       input: [
         {
-          filename: "image.png",
+          filename: new Date().toISOString() + mimeType.replace("image/", ""),
           httpMethod: "POST",
-          mimeType: "image/png",
+          mimeType: mimeType,
           resource: "IMAGE",
+          fileSize: size,
         },
       ],
     },
   );
+
   http_response.json(stagedTargets[0]);
 });
 
-app.post("/api/usersSkinProfile", async (http_request, http_response) => {
-  // Extract data from form-data request
-  const { skinType, concerns, image } = http_request.body;
-  console.log(http_request.body);
+app.post("/api/uploadImages", async (http_request, http_response) => {
+  const { image, parameters } = http_request.body;
 
-  http_response.json({ skinType, concerns, image });
-  return;
-  // Convert blob to image
-  let imageURL;
+  const form = new FormData();
+  parameters.forEach(({ name, value }) => {
+    form.append(name, value);
+  });
 
-  console.log(imageURL);
+  form.append("file", image);
 
-  http_response.json(imageURL);
+  try {
+    const uploadResponse = await fetch(parameters.resourceUrl, {
+      method: "POST",
+      headers: {
+        ...form.getHeaders(),
+      },
+      body: form,
+    });
+
+    const uploadData = await uploadResponse.json();
+    http_response.json(uploadData);
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    http_response.status(500).json({ error: "Error uploading image" });
+  }
 });
+
+// Apply multer middleware to parse the image from the form-data request
+const upload = multer();
+app.post(
+  "/api/usersSkinProfile",
+  upload.single("image"),
+  async (http_request, http_response) => {
+    // Extract data from form-data request
+    const { skinType, concerns, userId, userName } = http_request.body;
+    // Reading from the buffer
+    const image = http_request.file;
+
+    // Adding user to prisma database
+    await prisma.userSkinProfiles.create({
+      data: {
+        userId,
+        skinType: parseInt(skinType) || -1,
+        userName,
+        image: image.buffer,
+        skinConcerns: concerns
+          ? {
+              connect: concerns.split(",").map((concern) => ({ id: concern })),
+            }
+          : "",
+      },
+    });
+
+    http_response.json({ success: true });
+  },
+);
+
+// app.post("/api/usersSkinProfile", async (http_request, http_response) => {
+//   // Extract data from form-data request
+//   const { skinType, concerns, image, userId, userName } = http_request.body;
+
+//   prisma.userSkinProfiles.create({
+//     data: {
+//       userId,
+//       skinType,
+//       userName,
+//       // image: image,
+//       concerns: {
+//         connect: concerns.map((concern) => ({ id: concern })),
+//       },
+//     },
+//   });
+
+//   http_response.json(imageURL);
+// });
 
 app.post(
   "/api/products/recommendations",
   async (http_request, http_response) => {
-    // array of concerns
+    // array of concerns11111111111111
     const concerns = http_request.body?.concerns;
     const skinType = http_request.body?.skinType;
 
+    if (!concerns || !skinType) {
+      http_response.status(400).json({ error: "Invalid request" });
+      return;
+    }
     // Read data from sqlLite file
     const concernsResponse = await prisma.concerns.findMany({
       where: {
