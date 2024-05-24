@@ -3,7 +3,11 @@
 client_id = "7a8bfa24e6a7cfd4f566f4f200db1238"
 name = "product-recomendation"
 handle = "product-recomendation-1"
+<<<<<<< Updated upstream
 application_url = "https://mg-staff-dave-mpg.trycloudflare.com"
+=======
+application_url = "https://smithsonian-date-disaster-healing.trycloudflare.com"
+>>>>>>> Stashed changes
 embedded = true
 
 [build]
@@ -17,9 +21,15 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
+<<<<<<< Updated upstream
   "https://mg-staff-dave-mpg.trycloudflare.com/auth/callback",
   "https://mg-staff-dave-mpg.trycloudflare.com/auth/shopify/callback",
   "https://mg-staff-dave-mpg.trycloudflare.com/api/auth/callback"
+=======
+  "https://smithsonian-date-disaster-healing.trycloudflare.com/auth/callback",
+  "https://smithsonian-date-disaster-healing.trycloudflare.com/auth/shopify/callback",
+  "https://smithsonian-date-disaster-healing.trycloudflare.com/api/auth/callback"
+>>>>>>> Stashed changes
 ]
 
 [webhooks]

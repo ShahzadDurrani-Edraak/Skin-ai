@@ -44,7 +44,7 @@ async function sendImageToAPI(imageFile) {
         const result = data.result;
 
         const analysisTextDiv = document.getElementById("issues-list");
-        let featureListHTML = "<ul>";
+        let featureListHTML = "";
 
         // Mapping data to the feature list in order to fetch recommended products
         const featureList = [];
@@ -69,7 +69,7 @@ async function sendImageToAPI(imageFile) {
           }
         }
 
-        featureListHTML += "</ul>";
+        featureListHTML += "";
         analysisTextDiv.innerHTML = featureListHTML;
         analysisTextDiv1.style.display = "none";
         analysisTextDiv2.style.display = "block";
