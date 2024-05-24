@@ -31,7 +31,6 @@ model Products {
   description String?
   image String?
   ingredients Ingredients[]
-  recommendedTo UserSkinProfiles[]
 }
 
 model Ingredients {
@@ -54,7 +53,7 @@ model Concerns {
 model UserSkinProfiles {
   id Int @id @default(autoincrement())
   userId String
-  userName String
+  userName String @default("User")
   skinType Int
   image Bytes
   skinConcerns Concerns[]
