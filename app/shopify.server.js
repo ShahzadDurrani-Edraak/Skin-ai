@@ -7,7 +7,9 @@ import {
 } from "@shopify/shopify-app-remix/server";
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 import { restResources } from "@shopify/shopify-api/rest/admin/2024-04";
-import prisma from "./db.server";
+import prisma from "./db.server.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,

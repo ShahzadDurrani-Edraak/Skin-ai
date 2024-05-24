@@ -3,11 +3,7 @@
 client_id = "7a8bfa24e6a7cfd4f566f4f200db1238"
 name = "product-recomendation"
 handle = "product-recomendation-1"
-<<<<<<< Updated upstream
-application_url = "https://jul-henderson-steve-disco.trycloudflare.com"
-=======
-application_url = "https://hormone-pendant-locator-following.trycloudflare.com"
->>>>>>> Stashed changes
+application_url = "https://mg-staff-dave-mpg.trycloudflare.com"
 embedded = true
 
 [build]
@@ -21,15 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-<<<<<<< Updated upstream
-  "https://jul-henderson-steve-disco.trycloudflare.com/auth/callback",
-  "https://jul-henderson-steve-disco.trycloudflare.com/auth/shopify/callback",
-  "https://jul-henderson-steve-disco.trycloudflare.com/api/auth/callback"
-=======
-  "https://hormone-pendant-locator-following.trycloudflare.com/auth/callback",
-  "https://hormone-pendant-locator-following.trycloudflare.com/auth/shopify/callback",
-  "https://hormone-pendant-locator-following.trycloudflare.com/api/auth/callback"
->>>>>>> Stashed changes
+  "https://mg-staff-dave-mpg.trycloudflare.com/auth/callback",
+  "https://mg-staff-dave-mpg.trycloudflare.com/auth/shopify/callback",
+  "https://mg-staff-dave-mpg.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

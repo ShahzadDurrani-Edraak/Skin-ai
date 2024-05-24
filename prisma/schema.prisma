@@ -31,6 +31,7 @@ model Products {
   description String?
   image String?
   ingredients Ingredients[]
+  recommendedTo UserSkinProfiles[]
 }
 
 model Ingredients {
@@ -47,4 +48,14 @@ model Concerns {
   name String
   description String?
   ingredients Ingredients[]  
+  facedBy UserSkinProfiles[]
+}
+
+model UserSkinProfiles {
+  id Int @id @default(autoincrement())
+  userId String
+  userName String
+  skinType Int
+  image Bytes
+  skinConcerns Concerns[]
 }
