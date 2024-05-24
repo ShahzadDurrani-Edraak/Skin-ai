@@ -23,21 +23,85 @@ async function sendImageToAPI(imageFile) {
 
     const interval = setInterval(updateProgressBar, 500);
 
-    try {
+    // Will need to update
+    /*try {
+      // Get the upload URL
       const response = await fetch(
-        "https://api-us.faceplusplus.com/facepp/v1/skinanalyze",
+        "https://0b6a-182-180-181-6.ngrok-free.app/api/getUploadURL",
         {
           method: "POST",
-          body: formData,
+          body: JSON.stringify({
+            mimeType: imageFile.type,
+            size: imageFile.size.toString(),
+          }),
+          redirect: "follow",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
       );
+      const responseData = await response.json();
+
+      const form = new FormData();
+
+      // Add each of the params we received from Shopify to the form. this will ensure our ajax request has the proper permissions and s3 location data.
+      responseData.parameters.forEach(({ name, value }) => {
+        form.append(name, value);
+      });
+
+      form.append("file", image);
+
+      try {
+        const uploadResponse = await fetch(responseData.url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          body: form,
+        });
+
+        const uploadData = await uploadResponse.json();
+        console.log(uploadData);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    } catch (error) {
+      console.error("Error generating image url:", error);
+    } */
+
+    try {
+      // const response = await fetch(
+      //   "https://api-us.faceplusplus.com/facepp/v1/skinanalyze",
+      //   {
+      //     method: "POST",
+      //     body: formData,
+      //   },
+      // );
 
       clearInterval(interval);
 
       progressBar.value = 100;
       uploadPercentage.innerText = `Upload complete`;
 
-      console.log("response :>> ", response);
+      const response = {
+        ok: true,
+        json: async () => ({
+          result: {
+            skin_type: {
+              value: 1,
+              skin_type: "Oily skin",
+            },
+            acne: {
+              value: 1,
+              confidence: 0.9,
+            },
+            dark_spots: {
+              value: 1,
+              confidence: 0.8,
+            },
+          },
+        }),
+      };
 
       if (response.ok) {
         const data = await response.json();
@@ -69,133 +133,73 @@ async function sendImageToAPI(imageFile) {
           }
         }
 
+        console.log("Feature List:", featureList);
+
         featureListHTML += "";
         analysisTextDiv.innerHTML = featureListHTML;
         analysisTextDiv1.style.display = "none";
         analysisTextDiv2.style.display = "block";
 
-        // Fetching recommended products
-        const address = "https://e919-39-45-164-1.ngrok-free.app";
-        try {
-          const productResponse = await fetch(
-            address + "/api/products/recommendations",
-            {
-              method: "POST",
-              body: JSON.stringify({
-                concerns: featureList,
-                skinType: skinTypeIndex,
-              }),
-              headers: {
-                "Content-Type": "application/json",
-              },
+        const address = "https://2e6b-182-180-181-6.ngrok-free.app";
+
+        // Using promise.all to save user skin profile and fetch the recommended products
+        const recommendedProductsFetch = fetch(
+          address + "/api/products/recommendations",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              concerns: featureList,
+              skinType: skinTypeIndex,
+            }),
+            redirect: "follow",
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
             },
-          );
+          },
+        );
+
+        const formdata = new FormData();
+        formdata.append("skinType", skinTypeIndex);
+        formdata.append("concerns", featureList.join(","));
+        formdata.append("image", imageFile);
+
+        const userId = document.getElementById("customerId").innerText;
+        const userName = document.getElementById("customerName").innerText;
+        // Populate these accordingly
+        formdata.append("userId", userId);
+        formdata.append("userName", userName);
+
+        console.log("Form Data:", userId, userName, skinTypeIndex, featureList);
+
+        const requestOptions = {
+          method: "POST",
+          body: formdata,
+          redirect: "follow",
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+          },
+        };
+
+        const createUserProfileReq = fetch(
+          address + "/api/usersSkinProfile",
+          requestOptions,
+        );
+        // Fetching recommended products
+        try {
+          const responses = await Promise.all([
+            recommendedProductsFetch,
+            createUserProfileReq,
+          ]);
           let products = [];
+          if (responses[1].ok) {
+            console.log("User profile created successfully");
+          } else {
+            console.error("Failed to create user profile");
+          }
+          const productResponse = responses[0];
           if (!productResponse.ok) {
-            console.error(
-              "Failed to fetch recommended products. Assigning dummy data",
-            );
-            products = [
-              {
-                id: "3",
-                name: "Product 3",
-                description: null,
-                image: null,
-                ingredients: [
-                  {
-                    id: "Benzoyl Peroxide",
-                    name: "Benzoyl Peroxide",
-                    description: null,
-                    image: null,
-                  },
-                  {
-                    id: "Niacinamide",
-                    name: "Niacinamide",
-                    description: null,
-                    image: null,
-                  },
-                  {
-                    id: "Retinol",
-                    name: "Retinol",
-                    description: null,
-                    image: null,
-                  },
-                ],
-                score: 3,
-              },
-              {
-                id: "4",
-                name: "Product 4",
-                description: null,
-                image: null,
-                ingredients: [
-                  {
-                    id: "Caffeine",
-                    name: "Caffeine",
-                    description: null,
-                    image: null,
-                  },
-                  {
-                    id: "Hyaluronic Acid",
-                    name: "Hyaluronic Acid",
-                    description: null,
-                    image: null,
-                  },
-                  {
-                    id: "Peptides",
-                    name: "Peptides",
-                    description: null,
-                    image: null,
-                  },
-                  {
-                    id: "Retinoids",
-                    name: "Retinoids",
-                    description: null,
-                    image: null,
-                  },
-                  {
-                    id: "Vitamin C",
-                    name: "Vitamin C",
-                    description: null,
-                    image: null,
-                  },
-                ],
-                score: 6,
-              },
-              {
-                id: "5",
-                name: "Product 5",
-                description: null,
-                image: null,
-                ingredients: [
-                  {
-                    id: "Caffeine",
-                    name: "Caffeine",
-                    description: null,
-                    image: null,
-                  },
-                  {
-                    id: "Peptides",
-                    name: "Peptides",
-                    description: null,
-                    image: null,
-                  },
-                  {
-                    id: "Retinoids",
-                    name: "Retinoids",
-                    description: null,
-                    image: null,
-                  },
-                  {
-                    id: "Vitamin C",
-                    name: "Vitamin C",
-                    description: null,
-                    image: null,
-                  },
-                ],
-                score: 5,
-              },
-            ];
+            console.error("Failed to fetch recommended products.");
           } else {
             products = await productResponse.json();
           }
