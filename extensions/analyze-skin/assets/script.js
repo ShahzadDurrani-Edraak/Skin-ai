@@ -70,38 +70,38 @@ async function sendImageToAPI(imageFile) {
     } */
 
     try {
-      // const response = await fetch(
-      //   "https://api-us.faceplusplus.com/facepp/v1/skinanalyze",
-      //   {
-      //     method: "POST",
-      //     body: formData,
-      //   },
-      // );
+      const response = await fetch(
+        "https://api-us.faceplusplus.com/facepp/v1/skinanalyze",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
 
       clearInterval(interval);
 
-      progressBar.value = 100;
-      uploadPercentage.innerText = `Upload complete`;
+      // progressBar.value = 100;
+      // uploadPercentage.innerText = `Upload complete`;
 
-      const response = {
-        ok: true,
-        json: async () => ({
-          result: {
-            skin_type: {
-              value: 1,
-              skin_type: "Oily skin",
-            },
-            acne: {
-              value: 1,
-              confidence: 0.9,
-            },
-            dark_spots: {
-              value: 1,
-              confidence: 0.8,
-            },
-          },
-        }),
-      };
+      // const response = {
+      //   ok: true,
+      //   json: async () => ({
+      //     result: {
+      //       skin_type: {
+      //         value: 1,
+      //         skin_type: "Oily skin",
+      //       },
+      //       acne: {
+      //         value: 1,
+      //         confidence: 0.9,
+      //       },
+      //       dark_spots: {
+      //         value: 1,
+      //         confidence: 0.8,
+      //       },
+      //     },
+      //   }),
+      // };
 
       if (response.ok) {
         const data = await response.json();
@@ -124,6 +124,7 @@ async function sendImageToAPI(imageFile) {
               "Combination skin",
             ];
             const skinTypeDetail = skinTypeDetails[skinType];
+            skinTypeIndex = skinType;
             featureListHTML += `<li>Skin Type: ${skinTypeDetail}</li>`;
           } else {
             if (details.value === 1 && details.confidence > 0.8) {
@@ -140,7 +141,7 @@ async function sendImageToAPI(imageFile) {
         analysisTextDiv1.style.display = "none";
         analysisTextDiv2.style.display = "block";
 
-        const address = "https://2e6b-182-180-181-6.ngrok-free.app";
+        const address = "https://4027-39-62-5-62.ngrok-free.app";
 
         // Using promise.all to save user skin profile and fetch the recommended products
         const recommendedProductsFetch = fetch(
@@ -191,12 +192,14 @@ async function sendImageToAPI(imageFile) {
             recommendedProductsFetch,
             createUserProfileReq,
           ]);
+          console.log("responses[0] :>> ", responses);
           let products = [];
           if (responses[1].ok) {
             console.log("User profile created successfully");
           } else {
             console.error("Failed to create user profile");
           }
+
           const productResponse = responses[0];
           if (!productResponse.ok) {
             console.error("Failed to fetch recommended products.");
@@ -306,17 +309,6 @@ startCapture.addEventListener("click", function () {
   closeButton.style.display = "inline-block";
   startCamera();
 });
-
-// retake.addEventListener("click", function () {
-//   startCapture.style.display = "none";
-//   captureButton.style.display = "inline-block";
-//   closeButton.style.display = "inline-block";
-//   analysisImage.style.backgroundImage = ``;
-//   document
-//     .getElementById("recommendations-container")
-//     .classList.add("recommendations--hidden");
-//   startCamera();
-// });
 
 retakeButtons.forEach(function (retakeButton) {
   retakeButton.addEventListener("click", function () {

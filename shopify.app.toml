@@ -3,7 +3,7 @@
 client_id = "7a8bfa24e6a7cfd4f566f4f200db1238"
 name = "product-recomendation"
 handle = "product-recomendation-1"
-application_url = "https://made-spending-experimental-eq.trycloudflare.com"
+application_url = "https://coalition-nm-everything-expanding.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://made-spending-experimental-eq.trycloudflare.com/auth/callback",
-  "https://made-spending-experimental-eq.trycloudflare.com/auth/shopify/callback",
-  "https://made-spending-experimental-eq.trycloudflare.com/api/auth/callback"
+  "https://coalition-nm-everything-expanding.trycloudflare.com/auth/callback",
+  "https://coalition-nm-everything-expanding.trycloudflare.com/auth/shopify/callback",
+  "https://coalition-nm-everything-expanding.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

@@ -43,6 +43,31 @@ app.get("/products", async (http_request, http_response) => {
   http_response.json(products);
 });
 
+app.get("/products-metafields", async (http_request, http_response) => {
+  try {
+    const products = await shopify.product.list({ limit: 100 });
+    const ingredientsList = [];
+
+    for (const product of products) {
+      const metafields = await shopify.metafield.list({
+        metafield: { owner_resource: "product", owner_id: product.id },
+      });
+
+      const ingMetafield = metafields.find((mf) => mf.key === "ing");
+
+      if (ingMetafield) {
+        const ingredients = JSON.parse(ingMetafield.value);
+        ingredientsList.push({ productId: product.id, ingredients });
+      }
+    }
+
+    http_response.json(ingredientsList);
+  } catch (error) {
+    console.error("Error fetching ingredients:", error);
+    http_response.status(500).json({ error: "Error fetching ingredients" });
+  }
+});
+
 app.get("/api/usersSkinProfile", async (http_request, http_response) => {
   const usersSkinProfiles = await prisma.userSkinProfiles.findMany();
   http_response.json(usersSkinProfiles);
@@ -191,6 +216,8 @@ app.post(
         }
       });
     });
+
+    http_response.json(ingredients);
 
     // Fetch products from the database
     const products = await prisma.products.findMany({
