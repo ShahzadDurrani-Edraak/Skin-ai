@@ -141,7 +141,7 @@ async function sendImageToAPI(imageFile) {
         analysisTextDiv1.style.display = "none";
         analysisTextDiv2.style.display = "block";
 
-        const address = "https://4027-39-62-5-62.ngrok-free.app";
+        const address = "https://d2b0-182-181-140-175.ngrok-free.app";
 
         // Using promise.all to save user skin profile and fetch the recommended products
         const recommendedProductsFetch = fetch(
@@ -213,11 +213,12 @@ async function sendImageToAPI(imageFile) {
           const recommendationListDiv =
             document.getElementById("recommedation-list");
 
-          let recommendedProductsList = "<ul>";
+          let recommendedProductsList = `<div class="collection section-template--22506498523426__featured_collection-padding" id="collection-template--22506498523426__featured_collection" data-id="template--22506498523426__featured_collection">
+                                        <ul id="Slider-template--22506498523426__featured_collection" data-id="template--22506498523426__featured_collection" class="grid product-grid contains-card contains-card--product contains-card--standard grid--4-col-desktop grid--2-col-tablet-down" role="list" aria-label="Slider"><li id="Slide-template--22506498523426__featured_collection-1" class="grid__item scroll-trigger animate--slide-in" data-cascade="" style="--animation-order: 1;">`;
           products.forEach((product) => {
-            recommendedProductsList += `<li><a href="${product.url}" target="_blank">${product.name}</a></li>`;
+            recommendedProductsList += generateProductCard(product);
           });
-          recommendedProductsList += "</ul>";
+          recommendedProductsList += "</ul></div>";
           recommendationListDiv.innerHTML = recommendedProductsList;
         } catch (error) {
           console.error("Error fetching recommended products:", error);
@@ -322,3 +323,64 @@ retakeButtons.forEach(function (retakeButton) {
     startCamera();
   });
 });
+
+function generateProductCard(product) {
+  return `
+  <li id="Slide-template--22506498523426__featured_collection-1" class="grid__item scroll-trigger animate--slide-in" data-cascade="" style="--animation-order: 1;">
+   <div class="card-wrapper product-card-wrapper underline-links-hover">
+      <div class="card card--standard card--media" style="--ratio-percent: 100.0%;">
+        <div class="card__inner color-scheme-2 gradient ratio" style="--ratio-percent: 100.0%;">
+          <div class="card__media">
+            <div class="media media--transparent media--hover-effect">
+              <img src="${product.imageUrl}" sizes="(min-width: 1200px) 267px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)" alt="${product.name}" class="motion-reduce" loading="lazy" width="100" height="100" />
+            </div>
+          </div>
+          <div class="card__content">
+            <div class="card__information">
+              <h3 class="card__heading">
+                <a href="products/beauty-of-joseon-ginseng-cleansing-oil" class="full-unstyled-link">${product.name}</a>
+              </h3>
+            </div>
+            <div class="card__badge bottom left"><span class="badge badge--bottom-left color-scheme-3">${product.availability}</span></div>
+          </div>
+        </div>
+        <div class="card__content">
+          <div class="card__information">
+            <h3 class="card__heading h5">
+              <a href="${product.url}" class="full-unstyled-link">${product.name}</a>
+            </h3>
+            <div class="card-information">
+              <div class="price price--sold-out">
+                <div class="price__container">
+                  <div class="price__regular">
+                    <span class="visually-hidden visually-hidden--inline">Regular price</span>
+                    <span class="price-item price-item--regular">${product.price}</span>
+                  </div>
+                  <div class="price__sale">
+                    <span class="visually-hidden visually-hidden--inline">Regular price</span>
+                    <span>
+                      <s class="price-item price-item--regular"></s>
+                    </span>
+                    <span class="visually-hidden visually-hidden--inline">Sale price</span>
+                    <span class="price-item price-item--sale price-item--last">${product.salePrice}</span>
+                  </div>
+                  <small class="unit-price caption hidden">
+                    <span class="visually-hidden">Unit price</span>
+                    <span class="price-item price-item--last">
+                      <span></span>
+                      <span aria-hidden="true">/</span>
+                      <span class="visually-hidden">&nbsp;per&nbsp;</span>
+                      <span></span>
+                    </span>
+                  </small>
+                </div>
+              </div>
+            </div>
+            <div class="card__badge bottom left"><span class="badge badge--bottom-left color-scheme-3">${product.availability}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </li>
+  `;
+}
