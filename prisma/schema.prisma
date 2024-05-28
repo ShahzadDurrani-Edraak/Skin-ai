@@ -26,35 +26,29 @@ model Session {
 }
 
 model Products {
-  id String @id
-  name String
-  description String?
-  image String?
+  id Int @id @default(autoincrement())
+  productId BigInt @unique
   ingredients Ingredients[]
 }
 
 model Ingredients {
   id String @id
-  name String
-  description String?
-  image String?
   concerns Concerns[]
   products Products[]
 }
 
 model Concerns {
   id String @id
-  name String
-  description String?
   ingredients Ingredients[]  
   facedBy UserSkinProfiles[]
 }
 
 model UserSkinProfiles {
   id Int @id @default(autoincrement())
-  userId String
-  userName String @default("User")
+  userId BigInt
   skinType Int
+  skinTone Int?
+  skinEthnicity Int?
   image Bytes
   skinConcerns Concerns[]
 }
