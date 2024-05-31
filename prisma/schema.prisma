@@ -5,6 +5,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
+datasource db {
+  provider = "sqlite"
+  url      = "file:dev.sqlite"
+}
 // Note that some adapters may set a maximum length for the String type by default, please ensure your strings are long
 // enough when changing adapters.
 // See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
@@ -19,4 +23,38 @@ model Session {
   expires     DateTime?
   accessToken String
   userId      BigInt?
+}
+
+model Products {
+  id String @id
+  name String
+  description String?
+  image String?
+  ingredients Ingredients[]
+}
+
+model Ingredients {
+  id String @id
+  name String
+  description String?
+  image String?
+  concerns Concerns[]
+  products Products[]
+}
+
+model Concerns {
+  id String @id
+  name String
+  description String?
+  ingredients Ingredients[]  
+  facedBy UserSkinProfiles[]
+}
+
+model UserSkinProfiles {
+  id Int @id @default(autoincrement())
+  userId String
+  userName String @default("User")
+  skinType Int
+  image Bytes
+  skinConcerns Concerns[]
 }

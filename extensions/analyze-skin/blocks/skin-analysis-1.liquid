@@ -1,48 +1,100 @@
 <link rel="stylesheet" href="{{ 'styles.css' | asset_url }}">
 <script type="text/javascript" src="{{ 'script.js'| asset_url }}" async></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js" async></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
 
-<div class='skin-analysis-container'>
-  <div class="analysis-image" id="analysis-image">
-    <video id="cameraFeed" class="camera-feed"></video>
-    <button id="captureImage">Capture</button>
-    <button id="captureButton">Capture</button>
-    <button id="closeButton">X</button>
-    <progress id="progressBar" value="0" max="100" style="width:250px;"></progress>
-    <p id="uploadPercentage"></p>
-  </div>
-    {% comment %} <div class="analysis-image" id="analysis-image">
-      
-      <img id="uploadedImage" src="#" width="auto" height="auto" alt="Uploaded Image" style="display: none;">
-      <form id="upload_form" enctype="multipart/form-data" method="post">
-        <input type="file" name="file" id="file" class="inputfile" onchange="uploadFile()" />
-        <label for="file" id="fileLabel">Choose a file</label>
-    <progress id="progressBar" value="0" max="100" style="width:250px;"></progress>
-    <p id="uploadPercentage"></p>
-  </form>
-    </div> {% endcomment %}
-    <div class="analysis-text" id="analysis-text">
-      <div class="text1" id="text1">Our AI analyzes over 10+ skin metrics to offer personalized product suggestions for your unique beauty journey.</div>
-      <div class="text2" id="text2">
-      <h3>Combination skin</h3>
-      <p>Combination skin is a common skin type characterized by having both oily and dry areas on the face. Typically, the T-zone (forehead, nose, and chin) tends to be oilier, while the cheeks may be drier. This duality can make skincare routines a bit tricky because what works for one area might not be suitable for another.</p>
-      <p>Common issues</p>
-      <div id="issues-list">
-      <ul>
-      <li>Clogged pores</li>
-      <li>Flakiness</li>
-      <li>Tightness</li>
-      <li>Occasional sensitivity</li>
-      <li>Dehydration</li>
-    </ul>
-  </div>
-      </div>
+{% if customer %}
+  <div class="parent-class">
+    <div class='skin-analysis-container'>
+        <div class="video-parent">
+            <div class="analysis-image" id="analysis-image">
+                <div class="video">
+                    <video id="cameraFeed" class="camera-feed"></video>
+                    <button id="captureImage">Capture</button>
+                    <button id="closeButton">X</button>
+                    <div id="progressing">
+                        <progress id="progressBar" value="0" max="100"></progress>
+                        <p id="uploadPercentage"></p>
+                    </div>
+                </div>
+            </div>
+            <button id="captureButton">Capture</button>
+        </div>
+        <div class="analysis-text" id="analysis-text">
+            <div class="text1" id="text1">
+                <p>Our AI analyzes over 10+ skin metrics to offer personalized product suggestions for
+                    your unique beauty journey.</p>
+                <div class="text1-child">
+                    <p>Please make sure following things are taking care of in this selfie:</p>
+                    <ul class="issues-list">
+                        <li>X here</li>
+                        <li>Y here</li>
+                        <li>Z here</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text2" id="text2">
+                <h3>Combination skin</h3>
+                <p>Combination skin is a common skin type characterized by having both oily and dry areas on the
+                    face.
+                    Typically,
+                    the T-zone (forehead, nose, and chin) tends to be oilier, while the cheeks may be drier. This
+                    duality
+                    can make
+                    skincare routines a bit tricky because what works for one area might not be suitable for
+                    another.
+                </p>
+                <h5>Common issues</h5>
+                <ul class="issues-list" id="issues-list">
+                    <li>Clogged pores</li>
+                    <li>Flakiness</li>
+                    <li>Tightness</li>
+                    <li>Occasional sensitivity</li>
+                    <li>Dehydration</li>
+                </ul>
+                <button class="retake" id="retake1">Retake Image</button>
+            </div>
+            <div class="text3" id="error">
+                <h2>Sorry! We are unable to scan this selfie</h2>
+                <div class="error-div">
+                    <p>Please make sure following things are taking care of in this selfie:</p>
+                    <ul class="issues-list">
+                        <li>X here</li>
+                        <li>Y here</li>
+                        <li>Z here</li>
+                    </ul>
+                </div>
+                <button class="retake" id="retake2">Retake Image</button>
+            </div>
+        </div>
     </div>
-  </div>
+    <div class="recommendations recommendations--hidden" id="recommendations-container">
+        <h2>Recommended Products</h2>
+        <div class="" id="recommedation-list"></div>
+    </div>
+</div>
 
-  {% schema %}
+  
+    <p>Welcome, {{ customer.name }}!</p>
+    <table>
+    <tr>
+        <td id="customerId">{{ customer.id }}</td>
+        <td id="customerName">{{ customer.name }}</td>
+    </tr>
+    </table>
+    {% else %}
+  {% assign login_url = '/account/login' %}
+  {% assign return_to_url = request.path %}
+  {% assign redirect_url = login_url | append: '?return_to=' | append: return_to_url %}
+  <p>Please <a href="{{ redirect_url }}">log in</a> to view personalized content.</p>
+{% endif %}
+
+{% schema %}
 {
-  "name": "Skin analysis",
-  "target": "section"
+"name": "Skin analysis",
+"target": "section"
 }
 {% endschema %}
