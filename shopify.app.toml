@@ -3,7 +3,7 @@
 client_id = "7a8bfa24e6a7cfd4f566f4f200db1238"
 name = "product-recomendation"
 handle = "product-recomendation-1"
-application_url = "https://cameras-cad-test-organisations.trycloudflare.com"
+application_url = "https://ranking-le-examination-mixture.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://cameras-cad-test-organisations.trycloudflare.com/auth/callback",
-  "https://cameras-cad-test-organisations.trycloudflare.com/auth/shopify/callback",
-  "https://cameras-cad-test-organisations.trycloudflare.com/api/auth/callback"
+  "https://ranking-le-examination-mixture.trycloudflare.com/auth/callback",
+  "https://ranking-le-examination-mixture.trycloudflare.com/auth/shopify/callback",
+  "https://ranking-le-examination-mixture.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

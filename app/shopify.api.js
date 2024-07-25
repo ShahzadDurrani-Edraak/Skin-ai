@@ -301,7 +301,7 @@ app.post(
 
     http_response.json({ res });
   },
-)
+);
 
 app.post("/api/getUploadURL", async (http_request, http_response) => {
   const { filename, mimeType, size } = http_request.body;
@@ -348,7 +348,7 @@ app.post(
   upload.single("image"),
   async (http_request, http_response) => {
     // Extract data from form-data request
-    const { skinType, concerns, userId, userName } = http_request.body;
+    const { skinType, concerns, userId } = http_request.body;
     // Reading from the buffer
     const image = http_request.file;
 
@@ -357,7 +357,6 @@ app.post(
       data: {
         userId,
         skinType: parseInt(skinType) || -1,
-        userName,
         image: image.buffer,
         skinConcerns: concerns
           ? {
@@ -442,9 +441,9 @@ app.post("/api/recommendedProducts", async (http_request, http_response) => {
   console.log(
     localProducts.map((product) => product.productId.toString()),
     products.map((product) => product.id.toString()),
-    localProducts[0].productId.toString() == products[0].id.toString(),
-    localProducts[1].productId.toString() == products[0].id.toString(),
-    localProducts[2].productId.toString() == products[0].id.toString(),
+    localProducts[0]?.productId.toString() == products[0].id.toString(),
+    localProducts[1]?.productId.toString() == products[0].id.toString(),
+    localProducts[2]?.productId.toString() == products[0].id.toString(),
   );
   // Map local products with shopify products
   const localToShopifyProducts = localProducts.map((localProduct) => {

@@ -145,11 +145,11 @@ async function sendImageToAPI(imageFile) {
 
         // Using promise.all to save user skin profile and fetch the recommended products
         const recommendedProductsFetch = fetch(
-          address + "/api/products/recommendations",
+          address + "/api/recommendedProducts",
           {
             method: "POST",
             body: JSON.stringify({
-              concerns: featureList,
+              concerns: ["acne", "dark_circle", "mole"], //featureList
               skinType: skinTypeIndex,
             }),
             redirect: "follow",
@@ -169,7 +169,7 @@ async function sendImageToAPI(imageFile) {
         const userName = document.getElementById("customerName").innerText;
         // Populate these accordingly
         formdata.append("userId", userId);
-        formdata.append("userName", userName);
+        // formdata.append("userName", userName);
 
         console.log("Form Data:", userId, userName, skinTypeIndex, featureList);
 
@@ -201,25 +201,62 @@ async function sendImageToAPI(imageFile) {
           }
 
           const productResponse = responses[0];
+          // console.log("products response", productResponse.json());
+          // if (!productResponse.ok) {
+          //   console.error("Failed to fetch recommended products.");
+          // } else {
+          //   products = await productResponse.json();
+          // }
+
+          // document
+          //   .getElementById("recommendations-container")
+          //   .classList.remove("recommendations--hidden");
+          // const recommendationListDiv =
+          //   document.getElementById("recommedation-list");
+
+          // let recommendedProductsList = `<div class="collection section-template--22506498523426__featured_collection-padding" id="collection-template--22506498523426__featured_collection" data-id="template--22506498523426__featured_collection">
+          //                               <ul id="Slider-template--22506498523426__featured_collection" data-id="template--22506498523426__featured_collection" class="grid product-grid contains-card contains-card--product contains-card--standard grid--4-col-desktop grid--2-col-tablet-down" role="list" aria-label="Slider"><li id="Slide-template--22506498523426__featured_collection-1" class="grid__item scroll-trigger animate--slide-in" data-cascade="" style="--animation-order: 1;">`;
+          // products.forEach((product) => {
+          //   recommendedProductsList += generateProductCard(product);
+          // });
+          // recommendedProductsList += "</ul></div>";
+          // recommendationListDiv.innerHTML = recommendedProductsList;
+
           if (!productResponse.ok) {
             console.error("Failed to fetch recommended products.");
           } else {
-            products = await productResponse.json();
+            const productsByCategory = await productResponse.json();
+
+            document
+              .getElementById("recommendations-container")
+              .classList.remove("recommendations--hidden");
+            const recommendationListDiv =
+              document.getElementById("recommedation-list");
+
+            let recommendedProductsHTML = "";
+
+            for (const category in productsByCategory) {
+              if (productsByCategory.hasOwnProperty(category)) {
+                const products = productsByCategory[category];
+                if (products.length > 0) {
+                  recommendedProductsHTML += `
+                    <div class="collection section-template" id="collection-${category}" data-id="template-${category}">
+                      <h2>Recommended Products for ${category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+                      <ul id="Slider-${category}" class="grid product-grid contains-card contains-card--product contains-card--standard grid--4-col-desktop grid--2-col-tablet-down" role="list" aria-label="Slider">
+                  `;
+                  products.forEach((product) => {
+                    recommendedProductsHTML += generateProductCard(product);
+                  });
+                  recommendedProductsHTML += `
+                      </ul>
+                    </div>
+                  `;
+                }
+              }
+            }
+
+            recommendationListDiv.innerHTML = recommendedProductsHTML;
           }
-
-          document
-            .getElementById("recommendations-container")
-            .classList.remove("recommendations--hidden");
-          const recommendationListDiv =
-            document.getElementById("recommedation-list");
-
-          let recommendedProductsList = `<div class="collection section-template--22506498523426__featured_collection-padding" id="collection-template--22506498523426__featured_collection" data-id="template--22506498523426__featured_collection">
-                                        <ul id="Slider-template--22506498523426__featured_collection" data-id="template--22506498523426__featured_collection" class="grid product-grid contains-card contains-card--product contains-card--standard grid--4-col-desktop grid--2-col-tablet-down" role="list" aria-label="Slider"><li id="Slide-template--22506498523426__featured_collection-1" class="grid__item scroll-trigger animate--slide-in" data-cascade="" style="--animation-order: 1;">`;
-          products.forEach((product) => {
-            recommendedProductsList += generateProductCard(product);
-          });
-          recommendedProductsList += "</ul></div>";
-          recommendationListDiv.innerHTML = recommendedProductsList;
         } catch (error) {
           console.error("Error fetching recommended products:", error);
         }
@@ -332,29 +369,28 @@ function generateProductCard(product) {
         <div class="card__inner color-scheme-2 gradient ratio" style="--ratio-percent: 100.0%;">
           <div class="card__media">
             <div class="media media--transparent media--hover-effect">
-              <img src="${product.imageUrl}" sizes="(min-width: 1200px) 267px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)" alt="${product.name}" class="motion-reduce" loading="lazy" width="100" height="100" />
+              <img src="${product.image?.src}" sizes="(min-width: 1200px) 267px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)" alt="${product.name}" class="motion-reduce" loading="lazy" width="100" height="100" />
             </div>
           </div>
           <div class="card__content">
             <div class="card__information">
               <h3 class="card__heading">
-                <a href="products/beauty-of-joseon-ginseng-cleansing-oil" class="full-unstyled-link">${product.name}</a>
+                <a href="../products/${product.handle}" class="full-unstyled-link">${product.title}</a>
               </h3>
             </div>
-            <div class="card__badge bottom left"><span class="badge badge--bottom-left color-scheme-3">${product.availability}</span></div>
           </div>
         </div>
         <div class="card__content">
           <div class="card__information">
             <h3 class="card__heading h5">
-              <a href="${product.url}" class="full-unstyled-link">${product.name}</a>
+              <a href="../products/${product.handle}" class="full-unstyled-link">${product.title}</a>
             </h3>
             <div class="card-information">
               <div class="price price--sold-out">
                 <div class="price__container">
                   <div class="price__regular">
                     <span class="visually-hidden visually-hidden--inline">Regular price</span>
-                    <span class="price-item price-item--regular">${product.price}</span>
+                    <span class="price-item price-item--regular">0</span>
                   </div>
                   <div class="price__sale">
                     <span class="visually-hidden visually-hidden--inline">Regular price</span>
@@ -362,7 +398,7 @@ function generateProductCard(product) {
                       <s class="price-item price-item--regular"></s>
                     </span>
                     <span class="visually-hidden visually-hidden--inline">Sale price</span>
-                    <span class="price-item price-item--sale price-item--last">${product.salePrice}</span>
+                    <span class="price-item price-item--sale price-item--last">0</span>
                   </div>
                   <small class="unit-price caption hidden">
                     <span class="visually-hidden">Unit price</span>
@@ -376,7 +412,6 @@ function generateProductCard(product) {
                 </div>
               </div>
             </div>
-            <div class="card__badge bottom left"><span class="badge badge--bottom-left color-scheme-3">${product.availability}</span></div>
           </div>
         </div>
       </div>
